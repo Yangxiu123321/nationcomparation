@@ -29,14 +29,15 @@ int main(void)
   {
     while (getTimeFlag())                              //10ms执行进入一次
     {
-				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.left.real);
-				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.right.real);
-			//	USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.pos.angle);
-			//	USART_OUTF(gRobot.walk_t.pos.x);
-			  USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.pos.y);
-				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.left.aim);
-				USART_OUT(UART5,"%d\r\n",(int)gRobot.time);
-			//	USART_OUT_CHAR("\r\n");
+//				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.left.real);
+//				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.right.real);
+//			//	USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.pos.angle);
+//			//	USART_OUTF(gRobot.walk_t.pos.x);
+//			  USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.pos.y);
+//				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.left.aim);
+//				USART_OUT(UART5,"%d\r\n",(int)gRobot.time);
+				USART_OUTF(gRobot.walk_t.left.aim);
+				USART_OUT_CHAR("\r\n");
 				//MotorRead(); 
 			 // AngleRoute(0);
 			if(Dis(0,0,gRobot.walk_t.pos.x,gRobot.walk_t.pos.y)>12000)

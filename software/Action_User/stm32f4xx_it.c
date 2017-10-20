@@ -209,20 +209,21 @@ void UART5_IRQHandler(void)
 void YX_CMD_Handle(void)
 {
 	static Uint82Float float_tmp;
+	static char vel[10];
 	if(bufferI==4 && strncmp(buffer,"YX\r\n",4)==0)
 	{
 		USART_OUT(UART5,"OK\r\n");
-	}else if(bufferI==9 && strncmp(buffer,"vel",3)==0)
+	}else if(strncmp(buffer,"vel",3)==0)
 	{
-		float_tmp.udata[0]=buffer[3];
-		float_tmp.udata[1]=buffer[4];
-		float_tmp.udata[2]=buffer[5];
-		float_tmp.udata[3]=buffer[6];
+		for(int i=0;i<bufferI-3;i++)
+		{
+			vel[i]=buffer[i+3];
+		}
 		//速度赋值与限制
 		if(float_tmp.fdata<40000)
 		{
-			gRobot.walk_t.left.aim=float_tmp.fdata;
-			gRobot.walk_t.right.aim=float_tmp.fdata;
+			gRobot.walk_t.left.aim=(float)atof(vel);
+			gRobot.walk_t.right.aim=(float)atof(vel);
 		}
 	}else
 	{

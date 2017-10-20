@@ -27,23 +27,29 @@ Project File Date:  10/12/2017
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'D:\program files\mdk521a\ARM\ARMCC\Bin'
 Build target 'ACTION'
-compiling stm32f4xx_it.c...
-..\Action_User\stm32f4xx_it.c(212): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
-  	if(bufferI==4 && strncmp(buffer,"YX\r\n",4)==0)
-..\Action_User\stm32f4xx_it.c(215): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
-  	}else if(bufferI==9 && strncmp(buffer,"vel",3)==0)
-..\Action_User\stm32f4xx_it.c: 2 warnings, 0 errors
+compiling main.c...
+..\Action_User\main.c(51): warning:  #1-D: last line of file ends without a newline
+  }
+..\Action_User\main.c(19): warning:  #177-D: variable "openTime" was declared but never referenced
+  	static int openTime=0;
+..\Action_User\main.c(20): warning:  #177-D: variable "left" was declared but never referenced
+  	int left=0;
+..\Action_User\main.c(21): warning:  #177-D: variable "right" was declared but never referenced
+  	int right=0;
+..\Action_User\main.c(22): warning:  #177-D: variable "time" was declared but never referenced
+  	int time=0;
+..\Action_User\main.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=22864 RO-data=1128 RW-data=316 ZI-data=18612  
+Program Size: Code=30716 RO-data=1588 RW-data=320 ZI-data=18624  
 FromELF: creating hex file...
-".\SZW_STM32F407\demo.axf" - 0 Error(s), 2 Warning(s).
+".\SZW_STM32F407\demo.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   F:\nation\software\MDK-ARM\RTE
   D:\program files\mdk521a\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>
