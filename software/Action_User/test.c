@@ -4,7 +4,7 @@
 extern Robot_t gRobot;
 
 int a=0;
-extern int testMode;
+ int testMode;
 float laserRight;
 float laserLeft;
 void TestMode(void)

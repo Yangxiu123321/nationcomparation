@@ -54,6 +54,7 @@
 int IsSendOK(void);
 void SetOKFlagZero(void);
 void correctPos(float Givenangle,float GivenposX,float GivenposY);
+void YX_CMD_Handle(void);
 #endif /* __STM32F4xx_IT_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

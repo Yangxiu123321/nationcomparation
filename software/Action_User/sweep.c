@@ -1184,8 +1184,8 @@ void AngleRoute(float aimangle)
 {
   static float AngleErr=0;
 	AngleErr=angleErrorCount(aimangle,gRobot.walk_t.pos.angle);
-	VelCrl(CAN2, 1,40000+AnglePidControl(AngleErr)); //pid中填入的是差值
-	VelCrl(CAN2, 2,-40000+AnglePidControl(AngleErr));
+	VelCrl(CAN2, 1,gRobot.walk_t.right.aim+AnglePidControl(AngleErr)); //pid中填入的是差值
+	VelCrl(CAN2, 2,-gRobot.walk_t.left.aim+AnglePidControl(AngleErr));
 }
 /****************************************************************************
 * 名    称：In2Out()	

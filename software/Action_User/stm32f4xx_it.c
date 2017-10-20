@@ -38,6 +38,7 @@
 #include "tools.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "string.h"
 /******************************************************************************/
 /*            Cortex-M4 Processor Exceptions Handlers                         */
 /******************************************************************************/
@@ -135,7 +136,6 @@ if(StdId==0x280+PUSH_BALL_ID)
 	CAN_ClearFlag(CAN1, CAN_FLAG_FF1);
 	CAN_ClearFlag(CAN1, CAN_FLAG_FOV1);
 }
-int c=0;
 void CAN2_RX0_IRQHandler(void)
 {
 	 Msg_t Can2Msg; 
@@ -154,8 +154,6 @@ if(StdId==0x280+LEFT_MOTOR_WHEEL_ID)
 /***************右轮电机*****************/
 if(StdId==0x280+RIGHT_MOTOR_WHEEL_ID)
 {
-	//得到电机速度
-	c=c+1;
 		if(Can2Msg.receivebuff[0]==0x00005856)
 		{
 			gRobot.walk_t.right.real=Can2Msg.receivebuff[1];
@@ -172,14 +170,22 @@ if(StdId==0x280+RIGHT_MOTOR_WHEEL_ID)
 	CAN_ClearFlag(CAN2, CAN_FLAG_FF1);
 	CAN_ClearFlag(CAN2, CAN_FLAG_FOV1);
 }
-int testMode=0;
+static int bufferI=0;
+static char buffer[20];
+//数组初始化
+void bufferInit(void){
+  bufferI=0;
+  for(int i=0;i<20;i++)
+    buffer[i]=0;
+}
+//定义浮点数的联合体
+typedef union {
+		uint8_t udata[4];
+		float fdata;
+	} Uint82Float;
 void UART5_IRQHandler(void)
 {
-	static int step=0;
-  uint8_t data;
-	static char s[8];
-	static char a[8]; 
-	static uint32_t i=0;
+	uint8_t data=0;
 	if(USART_GetFlagStatus(USART1,USART_FLAG_ORE)!=RESET)
 	{
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
@@ -187,170 +193,43 @@ void UART5_IRQHandler(void)
 	}
 	else if(USART_GetITStatus(UART5, USART_IT_RXNE)==SET)   
 	{
-		USART_ClearITPendingBit( UART5,USART_IT_RXNE);
+		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
 		data=USART_ReceiveData(UART5);
-		switch(step)
+		buffer[bufferI]=data;
+		bufferI++;
+		if(bufferI>0 && buffer[bufferI-2]=='\r' && buffer[bufferI-1]=='\n')
 		{
-			case 0:
-				if(data=='s')
-					step++;
-				else if(data=='a')
-				{
-					step=7;
-				}					
-				else if(data=='t')
-				{
-					step=3;
-				}else if(data=='j')
-				{
-					step=11;
-				}else if(data=='d')
-				{
-					step=12;
-				}else if(data=='b')
-				{
-					step=13;
-				}
-				else
-				{
-					step=0;
-				}
-			break;
-			
-			case 1://调整速度
-				if((data<='9'&&data>='0')||data=='.'){
-					s[i]=data;
-					i++;
-				}else if(data=='\r')
-					step++;
-				else 
-					step=0;
-				break;
-			
-			case 2:
-				step=0;
-				if(data=='\n'){
-					gRobot.shoot_t.sAim.speed=(float)atof(s);	
-				}
-				for(uint32_t i=0;i<8;i++)
-					s[i]=0;
-				i=0;
-			
-				break;
-			
-			case 3:
-				if(data=='e')
-					step=4;
-				else 
-					step=0;
-				break;
-				
-			case 4:
-				if(data=='s')
-					step=5;
-				else 
-					step=0;
-			break;
-		
-			case 5:
-				if(data=='t')
-					step=6;
-				else 
-					step=0;
-			break;
-				
-			case 6:
-				step=0;
-				if(data=='1')//摄像头
-				{	
-					testMode=1;
-				}
-					else if(data=='2')//轮子，激光，行程开关自检
-				{
-					testMode=2;
-				}else if(data=='3')//发射整套自检
-				{
-					testMode=3;
-				}else if(data=='4')
-				{
-					testMode=4;
-				}else if(data=='5')
-				{
-					testMode=5;
-				}else 
-				{
-					testMode=0;
-				}
-				break;
-				
-			case 7:
-				if((data<='9'&&data>='0')||data=='.'){
-					a[i]=data;
-					i++;
-				}else if(data=='\r')
-					step=8;
-				else 
-					step=0;
-			break;
-			
-			case 8:
-				step=0;
-				if(data=='\n')
-				{
-					gRobot.shoot_t.sAim.angle=(float)atof(a);
-					//USART_OUT(UART5,"%d",(int)(gRobot.shoot_t.sAim.angle*1000));
-				}
-				for(uint32_t i=0;i<8;i++)
-					a[i]=0;
-				i=0;
-			break;
-				
-			case 11:
-				if(data=='0')
-				{
-					gRobot.correctSide=0;
-				}else if(data=='1')
-				{
-					gRobot.correctSide=1;
-				}else if(data=='2')
-				{
-					gRobot.correctSide=2;
-				}else if(data=='3')
-				{
-				  gRobot.correctSide=3;
-				}
-				else
-				{
-					gRobot.correctSide=6;//随便给定的值
-				}
-			break;
-				
-			case 12:
-				if(data=='0')
-				{
-					gRobot.angle++;
-				}else if(data=='1')
-				{
-					gRobot.angle--;
-				}else if(data=='2')
-				{
-					gRobot.speed++;
-				}else if(data=='3')
-				{
-					gRobot.speed--;
-				}
-				break;
-			case 13:
-				  gRobot.angle=0;
-					gRobot.speed=0;
-				break;
-			default:
-				break;
-		}
-	}
-	 
+			YX_CMD_Handle();
+		}/*else if(bufferI<=1)
+		{
+			bufferInit();
+		}*/
+  }
 }
-
+void YX_CMD_Handle(void)
+{
+	static Uint82Float float_tmp;
+	if(bufferI==4 && strncmp(buffer,"YX\r\n",4)==0)
+	{
+		USART_OUT(UART5,"OK\r\n");
+	}else if(bufferI==9 && strncmp(buffer,"vel",3)==0)
+	{
+		float_tmp.udata[0]=buffer[3];
+		float_tmp.udata[1]=buffer[4];
+		float_tmp.udata[2]=buffer[5];
+		float_tmp.udata[3]=buffer[6];
+		//速度赋值与限制
+		if(float_tmp.fdata<40000)
+		{
+			gRobot.walk_t.left.aim=float_tmp.fdata;
+			gRobot.walk_t.right.aim=float_tmp.fdata;
+		}
+	}else
+	{
+		USART_OUT(UART5,"error\r\n");
+	}
+	bufferInit();
+}
 typedef union
 {
     //这个32位整型数是给电机发送的速度（脉冲/s）

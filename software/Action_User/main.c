@@ -24,7 +24,6 @@ int main(void)
 	USART_OUT(UART5,"initsucess\r\n");
 	GPIO_ResetBits(GPIOE,GPIO_Pin_7);
  // while(LaserStart());
-	gRobot.start=1;
 	//driveGyro();
   while (1)
   {
@@ -35,10 +34,11 @@ int main(void)
 			//	USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.pos.angle);
 			//	USART_OUTF(gRobot.walk_t.pos.x);
 			  USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.pos.y);
+				USART_OUT(UART5,"%d\t",(int)gRobot.walk_t.left.aim);
 				USART_OUT(UART5,"%d\r\n",(int)gRobot.time);
 			//	USART_OUT_CHAR("\r\n");
-				MotorRead(); 
-			  AngleRoute(0);
+				//MotorRead(); 
+			 // AngleRoute(0);
 			if(Dis(0,0,gRobot.walk_t.pos.x,gRobot.walk_t.pos.y)>12000)
 			{
 				elmo_Disable(CAN2, 1);
